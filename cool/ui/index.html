@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cool UI Update – v2</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --panel: rgba(255,255,255,0.06);
+      --panel-border: rgba(255,255,255,0.08);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #22c55e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(56,189,248,0.12), transparent 40%),
+        radial-gradient(800px 400px at 90% 10%, rgba(34,197,94,0.10), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 3rem 1.25rem;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.08),
+        rgba(255,255,255,0.02)
+      );
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      padding: 1.75rem 2rem;
+      margin: 1.75rem 0;
+      box-shadow:
+        0 20px 40px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+    }
+
+    h2 {
+      margin-top: 0;
+      letter-spacing: -0.01em;
+    }
+
+    ul {
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 0.35rem 0;
+    }
+
+    .bookmarklet {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+      padding: 0.85rem 1.25rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #02131f;
+      font-weight: 800;
+      border-radius: 14px;
+      text-decoration: none;
+      cursor: grab;
+      box-shadow:
+        0 10px 30px rgba(56,189,248,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .bookmarklet:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 14px 36px rgba(56,189,248,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+
+    .bookmarklet:active {
+      cursor: grabbing;
+      transform: translateY(0);
+    }
+
+    code {
+      background: rgba(255,255,255,0.08);
+      padding: 0.15rem 0.4rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>❄️ Cool UI Update</h1>
+    <p class="subtitle">A slick dark‑mode bookmarklet that upgrades the Cool start page UI.</p>
+
+    <div class="card">
+      <h2>What it does</h2>
+      <ul>
+        <li>Set a custom background image (saved locally)</li>
+        <li>Adds a <strong>Change background</strong> menu option</li>
+        <li>Smooth tile hover opacity</li>
+        <li>Removes greeting headers</li>
+        <li>Hides the widgets button</li>
+        <li>Auto‑minimizes the sidebar</li>
+        <li>Fully transparent top header (logo removed)</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Install</h2>
+      <ol>
+        <li>Drag the button below to your bookmarks bar</li>
+        <li>Open the Cool start page</li>
+        <li>Click the bookmarklet</li>
+        <li>Press <code>Ctrl / Cmd + Shift + B</code> to change the background</li>
+      </ol>
+
+      <a class="bookmarklet" href='javascript:(function()%7Bjavascript%3A(()%3D>%7B%0A%20%20const%20STORAGE_KEY%3D%27customBackgroundImage%27%2C%0A%20%20%20%20%20%20TILE_OPACITY%3D.65%2C%0A%20%20%20%20%20%20TILE_HOVER_OPACITY%3D1%2C%0A%20%20%20%20%20%20SHORTCUT_KEY%3D%27b%27%3B%0A%0A%20%20function%20applyBackground(url%2C%20root%3Ddocument)%7B%0A%20%20%20%20root.querySelectorAll(%27.custom-background%27).forEach(d%3D>%7B%0A%20%20%20%20%20%20d.style.backgroundImage%3D%60url(%22%24%7Burl%7D%22)%60%3B%0A%20%20%20%20%7D)%3B%0A%20%20%7D%0A%0A%20%20const%20input%3Ddocument.createElement(%27input%27)%3B%0A%20%20input.type%3D%27file%27%3B%0A%20%20input.accept%3D%27image%2F*%27%3B%0A%20%20input.style.display%3D%27none%27%3B%0A%20%20document.body.appendChild(input)%3B%0A%20%20input.addEventListener(%27change%27%2C()%3D>%7B%0A%20%20%20%20const%20file%3Dinput.files%5B0%5D%3B%0A%20%20%20%20if(!file)%20return%3B%0A%20%20%20%20const%20reader%3Dnew%20FileReader()%3B%0A%20%20%20%20reader.onload%3D()%3D>%7BlocalStorage.setItem(STORAGE_KEY%2C%20reader.result)%3B%20applyBackground(reader.result)%3B%7D%3B%0A%20%20%20%20reader.readAsDataURL(file)%3B%0A%20%20%7D)%3B%0A%0A%20%20document.addEventListener(%27keydown%27%2C%20e%3D>%7B%0A%20%20%20%20if((e.ctrlKey%7C%7Ce.metaKey)%26%26e.shiftKey%26%26e.key.toLowerCase()%3D%3D%3DSHORTCUT_KEY)%7B%0A%20%20%20%20%20%20e.preventDefault()%3B%0A%20%20%20%20%20%20input.click()%3B%0A%20%20%20%20%7D%0A%20%20%7D)%3B%0A%0A%20%20function%20enhanceTiles(root%3Ddocument)%7B%0A%20%20%20%20root.querySelectorAll(%27.startpage-tile%27).forEach(tile%3D>%7B%0A%20%20%20%20%20%20if(tile.dataset.enhanced)%20return%3B%0A%20%20%20%20%20%20tile.dataset.enhanced%3D%27true%27%3B%0A%20%20%20%20%20%20tile.style.opacity%3DTILE_OPACITY%3B%0A%20%20%20%20%20%20tile.style.transition%3D%27opacity%20.25s%20ease%27%3B%0A%20%20%20%20%20%20tile.addEventListener(%27mouseenter%27%2C()%3D>tile.style.opacity%3DTILE_HOVER_OPACITY)%3B%0A%20%20%20%20%20%20tile.addEventListener(%27mouseleave%27%2C()%3D>tile.style.opacity%3DTILE_OPACITY)%3B%0A%20%20%20%20%7D)%3B%0A%20%20%7D%0A%0A%20%20function%20removeGreeting(root%3Ddocument)%7B%0A%20%20%20%20root.querySelectorAll(%27h2%27).forEach(h%3D>%7B%0A%20%20%20%20%20%20if(h.textContent.includes(%27Goedemiddag%27)%20%7C%7C%20h.textContent.includes(%27Goedemorgen%27))%7B%0A%20%20%20%20%20%20%20%20h.remove()%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D)%3B%0A%20%20%7D%0A%0A%20%20function%20hideWidgetsButton(root%3Ddocument)%7B%0A%20%20%20%20root.querySelectorAll(%27%23btnShowWidgets%27).forEach(b%3D>b.style.display%3D%27none%27)%3B%0A%20%20%7D%0A%0A%20%20function%20addBackgroundOption(root%3Ddocument)%7B%0A%20%20%20%20root.querySelectorAll(%27p-popover%27).forEach(p%3D>%7B%0A%20%20%20%20%20%20if(p.querySelector(%27%5Bdata-bg-option%5D%27))%20return%3B%0A%20%20%20%20%20%20const%20container%3Dp.querySelector(%27.p-popover-content%27)%7C%7Cp%3B%0A%20%20%20%20%20%20const%20btn%3Ddocument.createElement(%27button%27)%3B%0A%20%20%20%20%20%20btn.dataset.bgOption%3D%27true%27%3B%0A%20%20%20%20%20%20btn.textContent%3D%27Change%20background%27%3B%0A%20%20%20%20%20%20Object.assign(btn.style%2C%7Bdisplay%3A%27flex%27%2CalignItems%3A%27center%27%2Cwidth%3A%27100%25%27%2Cpadding%3A%270.5rem%200.75rem%27%2Cbackground%3A%27transparent%27%2Cborder%3A%27none%27%2Ccursor%3A%27pointer%27%2CfontWeight%3A%27600%27%2CtextAlign%3A%27left%27%7D)%3B%0A%20%20%20%20%20%20btn.onclick%3D()%3D>input.click()%3B%0A%20%20%20%20%20%20container.appendChild(btn)%3B%0A%20%20%20%20%7D)%3B%0A%20%20%7D%0A%0A%20%20function%20autoMinimizeSidebar(root%3Ddocument)%7B%0A%20%20%20%20root.querySelectorAll(%27.c-sidebar__toggle--desktop%27).forEach(btn%3D>%7B%0A%20%20%20%20%20%20const%20sidebar%3Dbtn.closest(%27.c-sidebar%27)%3B%0A%20%20%20%20%20%20if(sidebar%20%26%26%20!sidebar.classList.contains(%27c-sidebar--minimized%27))%7B%0A%20%20%20%20%20%20%20%20btn.click()%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D)%3B%0A%20%20%7D%0A%0A%20%20function%20customizeHeader(root%3Ddocument)%7B%0A%20%20%20%20root.querySelectorAll(%27c-header%2C%20.c-header%27).forEach(header%3D>%7B%0A%20%20%20%20%20%20header.style.backgroundColor%3D%27transparent%27%3B%0A%20%20%20%20%20%20header.style.boxShadow%3D%27none%27%3B%0A%20%20%20%20%20%20header.querySelectorAll(%27img.c-brand__image%27).forEach(img%3D>img.remove())%3B%0A%20%20%20%20%7D)%3B%0A%20%20%7D%0A%0A%20%20const%20stored%3DlocalStorage.getItem(STORAGE_KEY)%3B%0A%20%20if(stored)%20applyBackground(stored)%3B%0A%0A%20%20enhanceTiles()%3B%0A%20%20removeGreeting()%3B%0A%20%20hideWidgetsButton()%3B%0A%20%20addBackgroundOption()%3B%0A%20%20autoMinimizeSidebar()%3B%0A%20%20customizeHeader()%3B%0A%0A%20%20new%20MutationObserver(mutations%3D>%7B%0A%20%20%20%20mutations.forEach(m%3D>%7B%0A%20%20%20%20%20%20m.addedNodes.forEach(n%3D>%7B%0A%20%20%20%20%20%20%20%20if(n.nodeType%3D%3D%3D1)%7B%0A%20%20%20%20%20%20%20%20%20%20enhanceTiles(n)%3B%0A%20%20%20%20%20%20%20%20%20%20removeGreeting(n)%3B%0A%20%20%20%20%20%20%20%20%20%20hideWidgetsButton(n)%3B%0A%20%20%20%20%20%20%20%20%20%20addBackgroundOption(n)%3B%0A%20%20%20%20%20%20%20%20%20%20autoMinimizeSidebar(n)%3B%0A%20%20%20%20%20%20%20%20%20%20customizeHeader(n)%3B%0A%20%20%20%20%20%20%20%20%20%20if(stored)%20applyBackground(stored%2Cn)%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%7D)%3B%0A%20%20%7D).observe(document.body%2C%20%7BchildList%3Atrue%2C%20subtree%3Atrue%7D)%3B%0A%7D)()%3B%7D)()%3B'>Cool v2</a>
+    </div>
+
+    <footer>
+      <p>Runs entirely in your browser. No tracking. No servers. Just cool.</p>
+    </footer>
+  </div>
+</body>
+</html>
