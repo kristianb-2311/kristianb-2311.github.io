@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bookmarklets Installer</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f0f0f0; }
+  h1 { margin-bottom: 30px; }
+  .bookmarklet { display: inline-block; margin: 10px; padding: 15px 25px; background: #4CAF50; color: white; text-decoration: none; border-radius: 10px; font-size: 16px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+  .bookmarklet:hover { background: #45a049; }
+  p { margin-top: 20px; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+<h1>Drag these to your bookmarks bar</h1>
+
+<a class="bookmarklet" href="javascript:(function(){const iframe=document.getElementById('game_3')||[...document.querySelectorAll('iframe')].find(f=>f.src&&f.src.includes('games/oefenen/index.html'));if(iframe&&iframe.src){window.open(iframe.src,'_blank');}else{alert('Iframe not found');}})();">1</a>
+
+<a class="bookmarklet" href="javascript:(function(){'use strict';let lastWL=-1;function autoAnswer(){if(game&&typeof wl!=='undefined'&&game['wl']!==lastWL&&wl[game['wl']]){lastWL=game['wl'];let correctAnswer=wl[game['wl']].answer;setTimeout(()=>{game['wordTyped']=correctAnswer;console.log('Auto-answering: '+correctAnswer);checkAnswer(correctAnswer);},500);}requestAnimationFrame(autoAnswer);}autoAnswer();})();">2wws</a>
+
+<a class="bookmarklet" href="javascript:(function(){(function showAnswerWindow(){if(!document.getElementById('answerWindow')){let win=document.createElement('div');win.id='answerWindow';win.style.position='fixed';win.style.top='10px';win.style.right='10px';win.style.padding='10px 20px';win.style.backgroundColor='rgba(0,0,0,0.7)';win.style.color='white';win.style.fontSize='18px';win.style.fontFamily='Arial,sans-serif';win.style.borderRadius='10px';win.style.zIndex='9999';win.style.pointerEvents='none';document.body.appendChild(win);}let win=document.getElementById('answerWindow');setInterval(()=>{if(typeof spelWords!=='undefined'&&typeof gameWordCurrent!=='undefined'){let word=spelWords[gameWordCurrent]||'';win.textContent='Correct Answer: '+word;}},200);})();})();">2 dictee</a>
+
+<a class="bookmarklet" href="javascript:(function(){let lastProblem='';function typeAnswer(input,answer){input.focus();input.value='';const str=answer.toString();let i=0;function typeNext(){if(i<str.length){input.value+=str[i];input.dispatchEvent(new Event('input',{bubbles:true}));i++;setTimeout(typeNext,50);}else{input.dispatchEvent(new KeyboardEvent('keydown',{bubbles:true,key:'Enter',code:'Enter'}));}}typeNext();}function autoSolveMath(){const h2=document.querySelector('h2.math99-game-question-view');const input=document.querySelector('#playerAnswerInput');if(!h2||!input)return;const text=h2.innerText.trim();if(text===lastProblem)return;const match=text.match(/(-?\d+)\s*([x\+\-])\s*(-?\d+)/i);if(match){const num1=Number(match[1]);const operator=match[2];const num2=Number(match[3]);let answer;switch(operator){case'x':answer=num1*num2;break;case'+':answer=num1+num2;break;case'-':answer=num1-num2;break;default:answer='';}const popup=document.createElement('div');popup.innerText=`${text} = ${answer}`;popup.style.position='fixed';popup.style.top='20px';popup.style.right='20px';popup.style.backgroundColor='#4CAF50';popup.style.color='white';popup.style.padding='15px 25px';popup.style.borderRadius='10px';popup.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)';popup.style.fontSize='18px';popup.style.zIndex='9999';popup.style.fontFamily='Arial,sans-serif';document.body.appendChild(popup);setTimeout(()=>popup.remove(),5000);typeAnswer(input,answer);lastProblem=text;}}setInterval(autoSolveMath,200);})();">99math</a>
+
+<p>Drag any button to your bookmarks bar to install the bookmarklet.</p>
+</body>
+</html>
