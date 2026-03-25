@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>English Quiz</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f7fb;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.topbar {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+}
+
+.stop-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: red;
+    color: white;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    width: 80%;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.choice { background: #e0e0e0; }
+.start { background: orange; color: white; }
+
+.center-start {
+    display: flex;
+    justify-content: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <button class="stop-btn" onclick="stopQuiz()">⏻</button>
+</div>
+
+<div class="container">
+
+    <h1>🇬🇧 English Quiz</h1>
+
+    <h2 id="question">Klik op start</h2>
+    <div id="answers"></div>
+
+    <div class="center-start">
+        <button id="startBtn" class="start" onclick="startQuiz()">Start</button>
+    </div>
+
+    <h2>Score: <span id="score">0</span></h2>
+    <p id="bonus"></p>
+
+</div>
+
+<script>
+let score = 0;
+let startTime = 0;
+let locked = false;
+let running = false;
+let shuffledQuestions = [];
+
+/* Base64 decode */
+function d(s){ return atob(s); }
+
+/* 50 QUESTIONS */
+const questions = [
+
+/* OPEN (25) */
+{type:"open", q:"Vertaal: kat", correct:d("Y2F0")},
+{type:"open", q:"Vertaal: hond", correct:d("ZG9n")},
+{type:"open", q:"Vertaal: auto", correct:d("Y2Fy")},
+{type:"open", q:"Vertaal: huis", correct:d("aG91c2U=")},
+{type:"open", q:"Vertaal: boom", correct:d("dHJlZQ==")},
+{type:"open", q:"Vertaal: boek", correct:d("Ym9vaw==")},
+{type:"open", q:"Vertaal: pen", correct:d("cGVu")},
+{type:"open", q:"Vertaal: tafel", correct:d("dGFibGU=")},
+{type:"open", q:"Vertaal: stoel", correct:d("Y2hhaXI=")},
+{type:"open", q:"Vertaal: deur", correct:d("ZG9vcg==")},
+{type:"open", q:"Vertaal: raam", correct:d("d2luZG93")},
+{type:"open", q:"Vertaal: school", correct:d("c2Nob29s")},
+{type:"open", q:"Vertaal: vriend", correct:d("ZnJpZW5k")},
+{type:"open", q:"Vertaal: water", correct:d("d2F0ZXI=")},
+{type:"open", q:"Vertaal: eten", correct:d("Zm9vZA==")},
+{type:"open", q:"Vertaal: rood", correct:d("cmVk")},
+{type:"open", q:"Vertaal: blauw", correct:d("Ymx1ZQ==")},
+{type:"open", q:"Vertaal: groen", correct:d("Z3JlZW4=")},
+{type:"open", q:"Vertaal: geel", correct:d("eWVsbG93")},
+{type:"open", q:"Vertaal: zwart", correct:d("YmxhY2s=")},
+{type:"open", q:"Vertaal: wit", correct:d("d2hpdGU=")},
+{type:"open", q:"Vertaal: groot", correct:d("Ymln")},
+{type:"open", q:"Vertaal: klein", correct:d("c21hbGw=")},
+{type:"open", q:"Vertaal: snel", correct:d("ZmFzdA==")},
+{type:"open", q:"Vertaal: langzaam", correct:d("c2xvdw==")},
+
+/* MC (25) */
+{type:"mc", q:"Ik heb een hond → ?", answers:[
+"I have a dog","I has a dog","I am dog","I dog have"], correct:"I have a dog"},
+
+{type:"mc", q:"Hij eet een appel → ?", answers:[
+"He eats an apple","He eat apple","He eating apple","He ate apple"], correct:"He eats an apple"},
+
+{type:"mc", q:"Wij spelen buiten → ?", answers:[
+"We play outside","We plays outside","We playing outside","We played outside"], correct:"We play outside"},
+
+{type:"mc", q:"Zij leest een boek → ?", answers:[
+"She reads a book","She read book","She reading book","She reads booked"], correct:"She reads a book"},
+
+{type:"mc", q:"Ik ga naar school → ?", answers:[
+"I go to school","I goes to school","I going school","I went school"], correct:"I go to school"},
+
+{type:"mc", q:"Wij zijn blij → ?", answers:[
+"We are happy","We is happy","We am happy","We be happy"], correct:"We are happy"},
+
+{type:"mc", q:"Hij heeft een fiets → ?", answers:[
+"He has a bike","He have a bike","He had a bike","He having bike"], correct:"He has a bike"},
+
+{type:"mc", q:"Zij is moe → ?", answers:[
+"She is tired","She are tired","She am tired","She be tired"], correct:"She is tired"},
+
+{type:"mc", q:"Ik ben een student → ?", answers:[
+"I am a student","I is a student","I are a student","I be a student"], correct:"I am a student"},
+
+{type:"mc", q:"Wij gaan naar huis → ?", answers:[
+"We go home","We goes home","We going home","We went home"], correct:"We go home"},
+
+{type:"mc", q:"Hij speelt voetbal → ?", answers:[
+"He plays football","He play football","He playing football","He played football"], correct:"He plays football"},
+
+{type:"mc", q:"Zij werkt hard → ?", answers:[
+"She works hard","She work hard","She working hard","She worked hard"], correct:"She works hard"},
+
+{type:"mc", q:"Ik zie een vogel → ?", answers:[
+"I see a bird","I sees a bird","I seeing bird","I saw bird"], correct:"I see a bird"},
+
+{type:"mc", q:"Wij drinken water → ?", answers:[
+"We drink water","We drinks water","We drinking water","We drank water"], correct:"We drink water"},
+
+{type:"mc", q:"Hij leest elke dag → ?", answers:[
+"He reads every day","He read every day","He reading every day","He reads everyday"], correct:"He reads every day"},
+
+{type:"mc", q:"Zij hebben een huis → ?", answers:[
+"They have a house","They has a house","They having house","They had house"], correct:"They have a house"},
+
+{type:"mc", q:"Ik schrijf een brief → ?", answers:[
+"I write a letter","I writes a letter","I writing letter","I wrote letter"], correct:"I write a letter"},
+
+{type:"mc", q:"Wij kijken TV → ?", answers:[
+"We watch TV","We watches TV","We watching TV","We watched TV"], correct:"We watch TV"},
+
+{type:"mc", q:"Hij rijdt een auto → ?", answers:[
+"He drives a car","He drive a car","He driving car","He drove car"], correct:"He drives a car"},
+
+{type:"mc", q:"Zij zingt een lied → ?", answers:[
+"She sings a song","She sing a song","She singing song","She sang song"], correct:"She sings a song"},
+
+{type:"mc", q:"Ik heb een vraag → ?", answers:[
+"I have a question","I has a question","I am a question","I had a question"], correct:"I have a question"},
+
+{type:"mc", q:"Wij lopen naar school → ?", answers:[
+"We walk to school","We walks to school","We walking to school","We walked to school"], correct:"We walk to school"},
+
+{type:"mc", q:"Hij kijkt naar mij → ?", answers:[
+"He looks at me","He look at me","He looking me","He looked me"], correct:"He looks at me"},
+
+{type:"mc", q:"Zij hoort muziek → ?", answers:[
+"She hears music","She hear music","She hearing music","She heard music"], correct:"She hears music"},
+
+{type:"mc", q:"Ik hou van pizza → ?", answers:[
+"I like pizza","I likes pizza","I liking pizza","I liked pizza"], correct:"I like pizza"}
+];
+
+/* shuffle */
+function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+        let j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+    }
+}
+
+function goFullScreen(){
+    document.documentElement.requestFullscreen();
+}
+
+document.addEventListener("fullscreenchange",()=>{
+    if(!document.fullscreenElement && running){
+        stopQuiz();
+    }
+});
+
+function startQuiz(){
+    goFullScreen();
+    document.getElementById("startBtn").style.display="none";
+
+    running=true;
+    score=0;
+
+    shuffledQuestions=[...questions];
+    shuffle(shuffledQuestions);
+
+    updateScore();
+    loadQuestion();
+}
+
+function stopQuiz(){
+    running=false;
+    document.getElementById("question").innerText="Quiz gestopt ⛔";
+    document.getElementById("answers").innerHTML="";
+    document.getElementById("startBtn").style.display="block";
+}
+
+function loadQuestion(){
+    if(!running) return;
+
+    locked=false;
+    startTime=Date.now();
+    document.getElementById("bonus").innerText="";
+
+    let q = shuffledQuestions[0];
+    document.getElementById("question").innerText=q.q;
+
+    let div=document.getElementById("answers");
+    div.innerHTML="";
+
+    if(q.type==="open"){
+        let input=document.createElement("input");
+        input.style.width="80%";
+        input.style.padding="10px";
+
+        setTimeout(()=>input.focus(),0);
+
+        let btn=document.createElement("button");
+        btn.innerText="Volgende";
+
+        function submit(){
+            if(locked)return;
+            locked=true;
+
+            let ans=input.value.trim().toLowerCase();
+            let cor=q.correct.toLowerCase();
+
+            if(ans===cor){
+                score++;
+                if((Date.now()-startTime)/1000<=3) score++;
+                bonus.innerText="Goed!";
+            } else {
+                bonus.innerText="Fout! Correct: "+q.correct;
+            }
+
+            updateScore();
+            next();
+        }
+
+        input.addEventListener("keydown",e=>{
+            if(e.key==="Enter") submit();
+        });
+
+        btn.onclick=submit;
+
+        div.appendChild(input);
+        div.appendChild(btn);
+        return;
+    }
+
+    /* MC + shuffle answers */
+    let shuffledAnswers = [...q.answers];
+    shuffle(shuffledAnswers);
+
+    shuffledAnswers.forEach(a=>{
+        let b=document.createElement("button");
+        b.className="choice";
+        b.innerText=a;
+
+        b.onclick=()=>{
+            if(locked)return;
+            locked=true;
+
+            if(a===q.correct){
+                score++;
+                if((Date.now()-startTime)/1000<=3) score++;
+                bonus.innerText="Goed!";
+            } else {
+                bonus.innerText="Fout! Correct: "+q.correct;
+            }
+
+            updateScore();
+            next();
+        };
+
+        div.appendChild(b);
+    });
+}
+
+function next(){
+    document.getElementById("question").innerText="Wachten...";
+    document.getElementById("answers").innerHTML="";
+
+    setTimeout(()=>{
+        shuffledQuestions.shift();
+
+        if(shuffledQuestions.length > 0){
+            loadQuestion();
+        } else {
+            document.getElementById("question").innerText="Quiz klaar 🎉";
+        }
+    },1000);
+}
+
+function updateScore(){
+    document.getElementById("score").innerText=score;
+}
+</script>
+
+</body>
+</html>
