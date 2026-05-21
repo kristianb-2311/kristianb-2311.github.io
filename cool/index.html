@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline Only Site</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f172a;
+      color: white;
+      overflow: hidden;
+    }
+
+    .card {
+      text-align: center;
+      padding: 40px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    .online {
+      background: #111827;
+    }
+
+    .offline {
+      background: linear-gradient(135deg, #0f172a, #1e293b, #312e81);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body class="online">
+  <div id="onlineScreen" class="card">
+    <h1>Zet wifi uit om door te gaan</h1>
+    <p>
+      om de tutorial te zien moet wifi uit staan tegen schermcontrole (cool focus)
+    </p>
+    <div class="status">Disconnect Wi‑Fi or go offline to continue.</div>
+  </div>
+
+  <div id="offlineScreen" class="card hidden">
+    <h1>Offline</h1>
+    <p>
+      volg de tutorial om cool focus te bypassen
+    </p>
+
+    <div style="margin-top:24px; text-align:left; background:rgba(255,255,255,0.08); padding:20px; border-radius:18px; line-height:1.8;">
+      <h2 style="margin-bottom:12px;">Tutorial</h2>
+      <ol style="padding-left:20px;">
+        
+        <li>Press <strong>Alt + Volume Up + X</strong> at the same time.</li>
+        <li>Wait for the black screen transition.</li>
+        <li>After completing the steps, enable Wi‑Fi again.</li>
+      </ol>
+    </div>
+
+    
+
+    <div id="secretPanel" class="hidden" style="margin-top:24px; padding:20px; border-radius:16px; background:rgba(255,255,255,0.08);">
+      <h2 style="margin-bottom:10px;">Secret Panel Opened</h2>
+      <p>You pressed <strong>Alt + Volume Up + X</strong> while offline.</p>
+      <p style="margin-top:12px; opacity:0.85;">
+        Steps completed. You may now enable Wi‑Fi again.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const onlineScreen = document.getElementById('onlineScreen');
+    const offlineScreen = document.getElementById('offlineScreen');
+
+    async function checkInternet() {
+      try {
+        await fetch('https://www.google.com/favicon.ico?cache=' + crypto.randomUUID(), {
+          mode: 'no-cors',
+          cache: 'no-store'
+        });
+
+        document.body.className = 'online';
+        onlineScreen.classList.remove('hidden');
+        offlineScreen.classList.add('hidden');
+      } catch (error) {
+        document.body.className = 'offline';
+        onlineScreen.classList.add('hidden');
+        offlineScreen.classList.remove('hidden');
+      }
+    }
+
+    // Instant browser network event switching
+    window.addEventListener('online', () => {
+      document.body.className = 'online';
+      onlineScreen.classList.remove('hidden');
+      offlineScreen.classList.add('hidden');
+    });
+
+    window.addEventListener('offline', () => {
+      document.body.className = 'offline';
+      onlineScreen.classList.add('hidden');
+      offlineScreen.classList.remove('hidden');
+    });
+
+    // Ultra-fast live checking
+    let checking = false;
+
+    async function liveCheck() {
+      if (checking) return;
+      checking = true;
+
+      await checkInternet();
+
+      checking = false;
+
+      // Run again almost instantly
+      setTimeout(liveCheck, 1);
+    }
+
+    liveCheck();
+
+    // Secret key combo detection
+    let altPressed = false;
+    let xPressed = false;
+
+    document.addEventListener('keydown', (e) => {
+      if (e.altKey) altPressed = true;
+      if (e.key.toLowerCase() === 'x') xPressed = true;
+
+      const offline = !navigator.onLine;
+
+      // Simulated VolumeUp key support for compatible devices/keyboards
+      if ((e.code === 'AudioVolumeUp' || e.key === 'VolumeUp') && altPressed && xPressed && offline) {
+        document.getElementById('secretPanel').classList.remove('hidden');
+      }
+    });
+
+    document.addEventListener('keyup', () => {
+      altPressed = false;
+      xPressed = false;
+    });
+  </script>
+</body>
+</html>
